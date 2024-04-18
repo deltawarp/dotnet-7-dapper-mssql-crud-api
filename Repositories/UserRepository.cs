@@ -26,8 +26,9 @@ public class UserRepository : IUserRepository
     public async Task<IEnumerable<User>> GetAll()
     {
         using var connection = _context.CreateConnection();
+   
         var sql = """
-            SELECT * FROM Users
+            SELECT Title, FirstName, LastName, Email, PhoneNumber, Role, PasswordHash FROM Users
         """;
         return await connection.QueryAsync<User>(sql);
     }
@@ -36,7 +37,7 @@ public class UserRepository : IUserRepository
     {
         using var connection = _context.CreateConnection();
         var sql = """
-            SELECT * FROM Users 
+            SELECT Title, FirstName, LastName, Email, PhoneNumber, Role, PasswordHash FROM Users 
             WHERE Id = @id
         """;
         return await connection.QuerySingleOrDefaultAsync<User>(sql, new { id });
@@ -46,7 +47,7 @@ public class UserRepository : IUserRepository
     {
         using var connection = _context.CreateConnection();
         var sql = """
-            SELECT * FROM Users 
+            SELECT Title, FirstName, LastName, Email, PhoneNumber, Role, PasswordHash FROM Users 
             WHERE Email = @email
         """;
         return await connection.QuerySingleOrDefaultAsync<User>(sql, new { email });
@@ -56,8 +57,8 @@ public class UserRepository : IUserRepository
     {
         using var connection = _context.CreateConnection();
         var sql = """
-            INSERT INTO Users (Title, FirstName, LastName, Email, Role, PasswordHash)
-            VALUES (@Title, @FirstName, @LastName, @Email, @Role, @PasswordHash)
+            INSERT INTO Users (Title, FirstName, LastName, Email, PhoneNumber, Role, PasswordHash)
+            VALUES (@Title, @FirstName, @LastName, @Email, @PhoneNumber, @Role, @PasswordHash)
         """;
         await connection.ExecuteAsync(sql, user);
     }
@@ -71,6 +72,7 @@ public class UserRepository : IUserRepository
                 FirstName = @FirstName,
                 LastName = @LastName, 
                 Email = @Email, 
+                PhoneNumber = @PhoneNumber,
                 Role = @Role, 
                 PasswordHash = @PasswordHash
             WHERE Id = @Id
