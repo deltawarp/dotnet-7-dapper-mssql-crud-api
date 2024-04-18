@@ -9,12 +9,14 @@ public class UpdateRequest
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
 
-    [EnumDataType(typeof(Role))]
-    public string? Role { get; set; }
-
     [EmailAddress]
     public string? Email { get; set; }
 
+    public string? PhoneNumber { get; set; }
+
+    [EnumDataType(typeof(Role))]
+    public string? Role { get; set; }
+    
     // treat empty string as null for password fields to 
     // make them optional in front end apps
     private string? _password;

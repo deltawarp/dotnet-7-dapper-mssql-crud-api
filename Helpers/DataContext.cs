@@ -16,8 +16,7 @@ public class DataContext
 
     public IDbConnection CreateConnection()
     {
-        var connectionString = $"Server={_dbSettings.Server}; Database={_dbSettings.Database}; User Id={_dbSettings.UserId}; Password={_dbSettings.Password};";
-        return new SqlConnection(connectionString);
+        return new SqlConnection(BuildConnectionString());
     }
 
     public async Task Init()
@@ -26,11 +25,19 @@ public class DataContext
         await _initTables();
     }
 
+    private string BuildConnectionString()
+    {
+        var connectionString = $"Server={_dbSettings.Server}; Database={_dbSettings.Database}; User Id={_dbSettings.UserId}; Password={_dbSettings.Password};";
+        if (_dbSettings.Dev.HasValue && _dbSettings.Dev.Value)
+        {
+            connectionString += " TrustServerCertificate=true; Encrypt=False";
+        }
+        return connectionString;
+    }
     private async Task _initDatabase()
     {
-        // create database if it doesn't exist
-        var connectionString = $"Server={_dbSettings.Server}; Database=master; User Id={_dbSettings.UserId}; Password={_dbSettings.Password};";
-        using var connection = new SqlConnection(connectionString);
+        
+        using var connection = new SqlConnection(BuildConnectionString());
         var sql = $"IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '{_dbSettings.Database}') CREATE DATABASE [{_dbSettings.Database}];";
         await connection.ExecuteAsync(sql);
     }
@@ -51,6 +58,7 @@ public class DataContext
                     FirstName NVARCHAR(MAX),
                     LastName NVARCHAR(MAX),
                     Email NVARCHAR(MAX),
+                    PhoneNumber NVARCHAR(MAX),
                     Role INT,
                     PasswordHash NVARCHAR(MAX)
                 );

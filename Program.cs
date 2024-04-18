@@ -28,9 +28,18 @@ var builder = WebApplication.CreateBuilder(args);
     services.AddSingleton<DataContext>();
     services.AddScoped<IUserRepository, UserRepository>();
     services.AddScoped<IUserService, UserService>();
+    services.AddSwaggerGen();
 }
 
 var app = builder.Build();
+
+//Use Swagger
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+    options.RoutePrefix = string.Empty;
+});
 
 // ensure database and tables exist
 {

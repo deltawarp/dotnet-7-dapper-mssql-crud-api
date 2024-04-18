@@ -79,6 +79,10 @@ public class UserService : IUserService
         // copy model props to user
         _mapper.Map(model, user);
 
+        // make sure the user has the right id
+        user.Id = id;
+
+
         // save user
         await _userRepository.Update(user);
     }
